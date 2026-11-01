@@ -1,0 +1,14 @@
+# Python 3.12, NVIDIA CUDA; shared Windows/Linux candidate recipe.
+# Install the CUDA Torch wheels from the README first. No CPU/offload fallback.
+torch==2.9.1+cu126
+torchvision==0.24.1+cu126
+transformers==5.20.2
+accelerate==1.15.0
+huggingface_hub==2.3.0
+tokenizers==0.23.3
+safetensors==0.8.0
+numpy==1.26.4
+pillow==13.0.0
+Jinja2==3.1.6
+-r requirements-gemma-overlay.txt
+lm-format-enforcer @ https://github.com/noamgat/lm-format-enforcer/archive/817f944fcc8851917c40300a47f62d1defc3ffc3.zip#sha256=3a849a0e878458e3f1c6d9b8055d2af14ce3d57477a381ab62c30a8a069d2555

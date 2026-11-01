@@ -1,0 +1,10 @@
+{
+  "upstream_commit": "24f79883b4889e3f0e6f4ae301808b9025872dfc",
+  "base_inputs": {
+    "unity/Packages/manifest.json": "b03bc851ad9826e3d8605fb3b7ba122add9af7121d615a6147a1e5aa33a12f85",
+    "unity/Assets/Scripts/AgentManager.cs": "b8d72ebcbef2a8385670ce55e5bf8a278e3f40fad00402f1f8f910a7c81c02fc",
+    "unity/Assets/Scripts/BaseFPSAgentController.cs": "777ef9deb806cd46a24d45b39d6bb30da47c2d8c85a6644884ca537ab61fa51c",
+    "unity/ProjectSettings/ProjectVersion.txt": "74398d67c3a967142f8073c43ad0d80e0c9cba5d5cc9d8952b8bc4f9eb9d8825"
+  },
+  "patch_sha256": "f5bc1fead6365e2b74ec933a3481338092c8903303dc9f8cdf00a44e69f67993"
+}

@@ -1,0 +1,123 @@
+--- a/unity/Assets/Scripts/AgentManager.cs
++++ b/unity/Assets/Scripts/AgentManager.cs
+@@ -1114,6 +1114,26 @@
+         );
+     }
+ 
++    private byte[] captureBatchCamera(Camera camera) {
++        // Batch players may have an unrendered screen backbuffer. Render the
++        // requested camera explicitly, while preserving its persistent targets.
++        var previousActive = RenderTexture.active;
++        var previousTarget = camera.targetTexture;
++        var temporary = RenderTexture.GetTemporary(
++            UnityEngine.Screen.width, UnityEngine.Screen.height, 24, RenderTextureFormat.ARGB32
++        );
++        try {
++            camera.targetTexture = temporary;
++            camera.Render();
++            RenderTexture.active = temporary;
++            return captureScreen();
++        } finally {
++            camera.targetTexture = previousTarget;
++            RenderTexture.active = previousActive;
++            RenderTexture.ReleaseTemporary(temporary);
++        }
++    }
++
+     private byte[] captureScreen() {
+         if (tex.height != UnityEngine.Screen.height || tex.width != UnityEngine.Screen.width) {
+             tex = new Texture2D(
+@@ -1144,6 +1164,10 @@
+ #if PLATFORM_CLOUD_RENDERING
+             captureScreenAsync(payload, "image", agent.m_Camera);
+ #else
++            if (Application.isBatchMode) {
++                payload.Add(new KeyValuePair<string, byte[]>("image", captureBatchCamera(agent.m_Camera)));
++                return;
++            }
+             // XXX may not need this since we call render in captureScreenAsync
+             if (this.agents.Count > 1 || this.thirdPartyCameras.Count > 0) {
+                 RenderTexture.active = agent.m_Camera.activeTexture;
+--- a/unity/Assets/Scripts/BaseFPSAgentController.cs
++++ b/unity/Assets/Scripts/BaseFPSAgentController.cs
+@@ -26,7 +26,7 @@
+ using Random = UnityEngine.Random;
+ 
+ namespace UnityStandardAssets.Characters.FirstPerson {
+-    public abstract class BaseFPSAgentController : ActionInvokable {
++    public abstract partial class BaseFPSAgentController : ActionInvokable {
+         // debug draw bounds of objects in editor
+ #if UNITY_EDITOR
+         protected List<Bounds> gizmobounds = new List<Bounds>();
+@@ -794,7 +794,14 @@
+                 m_Camera.farClipPlane = action.cameraFarPlane;
+             }
+ 
+-            if (action.timeScale > 0) {
++            if (SafetyOwnsEnvironmentTime) {
++                if (action.timeScale != 1f) {
++                    errorMessage = "Owned environment clock rejects a timeScale override";
++                    actionFinished(false);
++                    return;
++                }
++                // Default command timeScale must not resume owned model-wait timers.
++            } else if (action.timeScale > 0) {
+                 if (Time.timeScale != action.timeScale) {
+                     Time.timeScale = action.timeScale;
+                 }
+--- /dev/null
++++ b/unity/Assets/Standard Assets/Characters/UnityStandardAssets.asmref
+@@ -0,0 +1 @@
++{"reference":"GUID:2f2468de8388f4e0b9af33d5f3d47318"}
+--- /dev/null
++++ b/unity/Assets/Standard Assets/Characters/UnityStandardAssets.asmref.meta
+@@ -0,0 +1,7 @@
++fileFormatVersion: 2
++guid: 037fb632a7946034fb79969cc8c0f25a
++AssemblyDefinitionReferenceImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+--- /dev/null
++++ b/unity/Assets/Standard Assets/CrossPlatformInput/UnityStandardAssets.asmref
+@@ -0,0 +1 @@
++{"reference":"GUID:2f2468de8388f4e0b9af33d5f3d47318"}
+--- /dev/null
++++ b/unity/Assets/Standard Assets/CrossPlatformInput/UnityStandardAssets.asmref.meta
+@@ -0,0 +1,7 @@
++fileFormatVersion: 2
++guid: 72b4f0115447bf344bdda1af4b11bd42
++AssemblyDefinitionReferenceImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+--- /dev/null
++++ b/unity/Assets/Standard Assets/Effects/UnityStandardAssets.asmref
+@@ -0,0 +1 @@
++{"reference":"GUID:2f2468de8388f4e0b9af33d5f3d47318"}
+--- /dev/null
++++ b/unity/Assets/Standard Assets/Effects/UnityStandardAssets.asmref.meta
+@@ -0,0 +1,7 @@
++fileFormatVersion: 2
++guid: d48a16e3e3fe79b4da61975ddae36f82
++AssemblyDefinitionReferenceImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+--- /dev/null
++++ b/unity/Assets/Standard Assets/Utility/UnityStandardAssets.asmref
+@@ -0,0 +1 @@
++{"reference":"GUID:2f2468de8388f4e0b9af33d5f3d47318"}
+--- /dev/null
++++ b/unity/Assets/Standard Assets/Utility/UnityStandardAssets.asmref.meta
+@@ -0,0 +1,7 @@
++fileFormatVersion: 2
++guid: 87c561aaaa688a2428dcfdd35b019d34
++AssemblyDefinitionReferenceImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 

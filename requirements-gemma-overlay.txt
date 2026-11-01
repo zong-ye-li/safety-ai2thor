@@ -1,0 +1,3 @@
+# Quanto and its native-extension build dependency. Install with dependency resolution.
+optimum-quanto==0.2.7
+ninja>=1.11.1

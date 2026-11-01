@@ -1,0 +1,9 @@
+# Python 3.12 Windows controller. For local GPU inference, also install requirements-inference.txt here.
+ai2thor==4.3.0
+numpy==1.26.4
+pillow==13.0.0
+opencv-python==4.11.0.86
+Flask==2.0.1
+Werkzeug==2.0.1
+msgpack==1.2.3
+psutil==7.2.2
