@@ -6,6 +6,10 @@ The framework connects visual observations with planning, action selection, memo
 
 The source snapshot includes the latest engineering configuration. Historical examples use their original configurations. See [technical_report.md](technical_report.md) for findings and limits.
 
+## Research context
+
+This research was conducted in the [Language Media Laboratory](https://www.ist.hokudai.ac.jp/labo/lml/) at Hokkaido University, with day-to-day guidance from [Binghao Wang](https://github.com/takashiwangbh), a PhD student, and under the supervision of Prof. [Rafal Rzepka](https://scholar.google.com/citations?user=KUiGeGMAAAAJ&hl=en).
+
 ## Package structure
 
 |Path|Purpose|
